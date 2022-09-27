@@ -42,7 +42,7 @@ t_bsq	*ft_get_map(t_bsq *params)
 	if (params->fd < 0 || params->fd > FOPEN_MAX || !BUFFER_SIZE || !buff) // OPEN_MAX = MAcro, fd peut pas être sup a 1023 
 				      														// (nb de fichier ouvert en meme temps)
 		return (ft_free_return(params, 0));
-	printf("Hello loop");
+	printf("Hello loop\n");
 	while (!(ft_has_nl(save, 1, 0)) && params->rd_ret != 0)
 	{
 		params->rd_ret = read(params->fd, buff, BUFFER_SIZE);

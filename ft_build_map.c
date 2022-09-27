@@ -24,21 +24,14 @@ t_bsq	*ft_free_exit(t_bsq *params, char *save)
 int	ft_bsq_atoi(t_bsq *params, char *save, int len)
 {
 	int	i;
-	int	j;
 	int	nb;
 
 	i = 0;
 	nb = 0;
 	while (i < len && save[i] >= '0' && save[i] <= '9')
 	{
-		j = i + 1;
-		while (save[j] != params->empty)
-		{
-			if (save[i] == save[j])
-				return(1);
-			j++;
-		}
-		nb = (nb * 10) + (save[i] - '0');
+		if (save[i] != params->empty)
+			nb = (nb * 10) + (save[i] - '0');
 		i++;
 	}
 	printf("bsqatoi1\n");
@@ -90,15 +83,24 @@ char	*ft_linedup(t_bsq *params, char *save, int len)
 	int		save_i;
 
 	save_i = params->save_index;
+	printf("len = %d, save_i + 1 = %d\n", len, save_i + 1);
 	line = malloc(sizeof(char) * (len - save_i + 1));
 	if (!line)
 		ft_free_exit(params, save);
 	index = 0;
 	while (save_i < len)
 	{
-		line[index] = save [save_i];
+		if (save[save_i] == params->empty || save[save_i] == params->obstacle)
+			line[index] = save [save_i];
+		else
+		{
+			free(line);
+			line = NULL;
+			params->error = 1;
+			return (line);
+		}
 		index++;
-		save_i += 1;
+		save_i++;
 	}
 	line[index] = '\0';
 	printf("save_i = %d\n", save_i);
@@ -124,13 +126,11 @@ int	ft_get_lines(t_bsq *params, char *save)
 		max = ft_has_nl(save, 0, params->save_index);
 		if (save[max] == '\0')
 			params->rd_ret = 0;
-		printf("index of nl = %d\n", max);
+		printf("params->line_size = %d, max = %d, params->save_index = %d\n", params->line_size, max, params->save_index);
 		if (params->line_size == 0 || params->line_size == max - params->save_index)
 			params->line_size = max - params->save_index;
 		else
 			return (1);
-
-		printf("params->line_size = %d, max = %d, params->save_index = %d\n", params->line_size, max, params->save_index);
 		printf("params->map_row = %d\n", params->map_row); // segfault ici
 		params->map[params->map_row] = ft_linedup(params, save, max);
 		params->map_row += 1;

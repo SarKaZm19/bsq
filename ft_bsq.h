@@ -36,6 +36,6 @@ t_bsq	*ft_init_struct(void);
 
 
 
-#define BUFFER_SIZE 4096
+#define BUFFER_SIZE 2000000
 
 #endif

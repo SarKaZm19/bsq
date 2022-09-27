@@ -63,71 +63,80 @@ int	ft_get_first_line(t_bsq *params, char *save)
 	printf("len = %d\n", len);
 	if (len < 4)
 		return (1);
-	params->full = save[len - 2];
-	params->obstacle = save[len - 3];
-	params->empty = save[len - 4];
+	params->full = save[len - 1];
+	params->obstacle = save[len - 2];
+	params->empty = save[len - 3];
 	printf("empty = %c, obstacle = %c, full = %c\n", params->empty, params->obstacle, params->full);
 	if (params->full == params->obstacle || params->full == params->empty
 		|| params->obstacle == params->empty)
 		return (1);
-	params->error = ft_bsq_atoi(params, save, len - 4);
+	params->error = ft_bsq_atoi(params, save, len - 3);
 	if (params->error == 1)
 		return (1);
 	printf("params->nb_lines = %d\n", params->nb_lines);
-	params->map = malloc(sizeof(char) * (params->nb_lines + 1));
+	params->map = malloc(sizeof(char*) * (params->nb_lines + 1));
 	if (!(params->map))
 		return (1);
-	params->line_size = len;
+	params->map[params->nb_lines] = '\0';
 	params->first_line = 1;
+	params->save_index = len;
 	return (0);
 }
 
-char	*ft_linedup(t_bsq *params, char *save, int *i, int len)
+char	*ft_linedup(t_bsq *params, char *save, int len)
 {
 	char	*line;
 	int 	index;
+	int		save_i;
 
-	line = malloc(sizeof(char) * (len - *i + 1));
+	save_i = params->save_index;
+	line = malloc(sizeof(char) * (len - save_i + 1));
 	if (!line)
 		ft_free_exit(params, save);
 	index = 0;
-	while (save[*i] != '\n' && save[*i])
+	while (save_i < len)
 	{
-		line[index] = save [*i];
+		line[index] = save [save_i];
 		index++;
-		*i += 1;
+		save_i += 1;
 	}
 	line[index] = '\0';
-	printf("*i = %d\n", *i);
+	printf("save_i = %d\n", save_i);
 	printf(":%s:\n", line);
-	printf("%s\n", save);
+	params->save_index = save_i;
 	return (line);
 }
 
 int	ft_get_lines(t_bsq *params, char *save)
 {
-	int	i;
-	//int	j;
 	int	max;
 
-	i = 0;
-	printf("save=%s\n", save);
-	while (save[i])
+	printf("save=%c, index = %d\n", save[params->save_index], params->save_index);
+	if  (save[params->save_index] == '\n' && save[params->save_index + 1] == '\0')
 	{
-		//j = 0;
-		max = ft_has_nl(save, 0, i);
-		printf("params->line_size = %d, max = %d, i = %d\n", params->line_size, max, i);
-		if (params->line_size != 0 && (max - i != params->line_size))
-			return(1);	
-		params->line_size = max - i;
-		printf("params->map_row = %d\n", params->map_row); // segfault ici
-		params->map[params->map_row] = ft_linedup(params, save, &i, max);
-		printf("i = %d\n", i);
-		params->map_row++;
-		i++;
+		params->map[params->map_row] = NULL;
+		free(save);
+		return (0);
 	}
-	params->rd_ret = 0;
-	free(save);
+	while (save[params->save_index])
+	{
+		params->save_index += 1;
+		max = ft_has_nl(save, 0, params->save_index);
+		if (save[max] == '\0')
+			params->rd_ret = 0;
+		printf("index of nl = %d\n", max);
+		if (params->line_size == 0 || params->line_size == max - params->save_index)
+			params->line_size = max - params->save_index;
+		else
+			return (1);
+
+		printf("params->line_size = %d, max = %d, params->save_index = %d\n", params->line_size, max, params->save_index);
+		printf("params->map_row = %d\n", params->map_row); // segfault ici
+		params->map[params->map_row] = ft_linedup(params, save, max);
+		params->map_row += 1;
+		printf("i = %d\n", params->save_index);
+
+	}
 	return (0);
 }
 

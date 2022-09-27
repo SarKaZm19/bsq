@@ -20,6 +20,7 @@ typedef struct	s_bsq
 	int	buffer_size;
 	int	map_col;
 	int	map_row;
+	int	save_index;
 	char    empty;
 	char    obstacle;
 	char    full;

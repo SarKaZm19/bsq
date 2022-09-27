@@ -15,7 +15,6 @@ char	*ft_strjoin(char *save, char *buff)
 	}
 	len_save = ft_strlen(save);
 	len_buff = ft_strlen(buff);
-	printf("lenbuff = %d\nlensave=%d\n", len_buff, len_save);
 	joined = malloc(sizeof(char) * (len_save + len_buff + 1));
 	if (!joined)
 		return (NULL);

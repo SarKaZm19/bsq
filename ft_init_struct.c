@@ -15,6 +15,7 @@ t_bsq        *ft_init_struct(void)
 	params->first_line = 0;
 	params->map_col = 0;
 	params->map_row = 0;
+	params->save_index = 0;
 	params->empty = '0';
 	params->obstacle = '0';
 	params->full = '0';

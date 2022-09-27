@@ -146,16 +146,19 @@ t_bsq	*ft_build_map(t_bsq *params, char *save)
 	{
 		params->error = ft_get_first_line(params, save);
 		if (params->error == 1)
+		{
+			params->rd_ret = 0;
 			return (params);
+		}
 	}
 	if (params->first_line == 1)
 	{
 		params->error = ft_get_lines(params, save);
 		if (params->error == 1)
+		{
+			params->rd_ret = 0;
 			return (params);
-	}
-	//printf("params[k] = %s\n", *(params->map));
-	//condition d'arret sur nb_lnes == 0 et/ou firsT_line = 0
-	
+		}
+	}	
 	return (params);
 }
